@@ -41,7 +41,6 @@ end
 local pose = "None"
 
 local grounded = true
-local isSeo = false
 
 BoredAnim:GetMarkerReachedSignal("Step"):Connect(function()
 	Sounds.PlaySound(char.HumanoidRootPart, script.step.SoundId, script.step.Volume, script.step.PlaybackSpeed)
@@ -94,17 +93,6 @@ TopSpeed = 75
 OnSlope = false
 
 char.HumanoidRootPart:FindFirstChild("Jumping").SoundId = "rbxassetid://157626116"
-
-plr.Chatted:Connect(function(message) -- seo
-	if string.sub(message, 1, 3) == "seo" and plr.Name == "Theamazingnater" then
-		-- Disable the player's speed cap
-		TopSpeed = math.huge
-		-- enable seo
-    -- don't be like seo
-    -- seo's physics is ass LOL, but to be fair so is this prototype's
-		isSeo = true
-	end
-end)
 
 update.RenderStepped:connect(function()
 	local rootvel = rootpart.Velocity.Y
@@ -207,9 +195,6 @@ end)()
 
 while true do
 	    wait()
-	    if pose == "Jumping" and isSeo then
-		    rootpart.Velocity = rootpart.Velocity + Vector3.new(0,100,0) -- bye bye
-	    end
 		AnimationTracks = hum:GetPlayingAnimationTracks()
 		if pose == "Walking" and cananimate then
 			if char.Humanoid.WalkSpeed < SecondMach then
