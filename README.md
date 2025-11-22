@@ -22,6 +22,8 @@ Sonic Saturn's source code
 
 A Hattastic Travel's source code 
 
+Ghost Generator plugin & Ghost Playback Helper - Ghost Generator is a plugin that lets you record a gameplay demo, and Ghost Playback Helper is a module that plays back those demos. It was taken down for god knows what reason and forced off the Creator Marketplace. Thank you, Roblox! For taking down an innocent piece of code!
+
 # Will this repository recieve any updates?
 
 Definitely! Whenever I make something for fun or something becomes really old I'll put the source code here for you guys to enjoy.
