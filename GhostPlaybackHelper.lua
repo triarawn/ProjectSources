@@ -1,19 +1,26 @@
 -- Helper module to be paired with Ghost Generator. 
 -- Allows you to make a model playback a Ghost Generator recording.
 -- Created by Triarawn, 11/21/2025
+-- Last updated 3/4/2026
 -- :]
 
 local playbackHelper = {}
 
+type AnimationChunk = { -- A chunk of animation data.
+	ID:string,
+	Speed:number,
+	Priority:string,
+	Weight:number
+}
 type PlaybackChunk = { -- A chunk of playback data, used to store movement.
 	Position:CFrame,
-	AnimationsPlaying:{string},
+	AnimationsPlaying:{AnimationChunk},
 	CurrHumState:string
 }
 -- LerpTime determines how smooth you want the playback to be. Set it to 1 to have it be choppy.
 -- Having a low LerpTime makes it appear smoother, and more like an actual player.
 playbackHelper.LerpTime = 0.25
-playbackHelper.RecordingStorage = game.ReplicatedStorage.GameStorage.GhostPlaybacks -- This is where all recordings will be stored.
+playbackHelper.RecordingStorage = game.ReplicatedFirst -- This is where all recordings will be stored.
 playbackHelper.playbacksActive = {}
 local smoothness_factor = 0.01585420034825802
 
@@ -55,14 +62,29 @@ function doPlayback(Model, data_piece)
 				-- load our Animation onto it
 				local id = "nil"
 				local speed = 1
+				local weight = 1
+				local priority = Enum.AnimationPriority.Core
 				if typeof(q) == "string" then
-					-- Old format 
+					-- Older format 
 					id = q
 					speed = 1
+					weight = 1
+					priority = Enum.AnimationPriority.Core
 				elseif typeof(q) == "table" then
-					-- New format
-					id = q[1]
-					speed = q[2]
+					-- Maybe new or old format?
+					if q[1] ~= nil then
+						-- Old format
+						id = q[1]
+						speed = q[2]
+						weight = 1
+						priority = Enum.AnimationPriority.Core
+					elseif q["ID"] ~= nil then
+						-- New format
+						id = q["ID"]
+						speed = q["Speed"] or 1
+						weight = q["Weight"] or 1
+						priority = Enum.AnimationPriority[q["Priority"]] or Enum.AnimationPriority.Core
+					end
 				end
 				table.insert(ids, id)
 				if playback_info.AlreadyPlayingAnims[id] == nil then
@@ -70,6 +92,8 @@ function doPlayback(Model, data_piece)
 					animinst.AnimationId = id
 					local anim : AnimationTrack = loader:LoadAnimation(animinst)
 					anim:AdjustSpeed(speed)
+					anim:AdjustWeight(weight)
+					anim.Priority = priority
 					playback_info.AlreadyPlayingAnims[id] = anim
 					anim:Play()
 				else
